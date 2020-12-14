@@ -1,0 +1,137 @@
+grammar org.tvtower.Bmx with org.eclipse.xtext.common.Terminals
+//import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate bmx "http://www.tvtower.org/Bmx"
+
+BmxFile hidden (NL, WS, SL_COMMENT, ML_COMMENT):
+	{BmxFile}
+	((superstrict?="SuperStrict")|(strict?="Strict"))?
+	statements+=MainStatement*;
+	
+MainStatement: FrameworkStatement|ModuleStatement|ModuleInfoStatement|ImportStatement|TypeBlock|FunctionBlock
+	//|OtherStatent - while, for,...
+;
+
+ImportStatement: "import" (importURI=STRING) importedNamespace=FQN;
+FrameworkStatement:"Framework" module=FQN;
+ModuleStatement:"Module" module=FQN;
+ModuleInfoStatement:"ModuleInfo" info=STRING;
+
+TypeBlock returns BmxType:
+	"Type" name=ID ("extends" supertype=[ BmxType | ID])?
+		(abstract?="abstract"|final?="final")?
+		content+=TypeContent*
+	("EndType"| "End" "Type")
+;
+
+TypeContent:ConstantDefinition|GlobalDefinion|FieldDefinition|MethodBlock|FunctionBlock;
+
+
+ConstantDefinition:"Const" name=ID content=ArgumentList<fctArg=false>;
+
+GlobalDefinion: "Global" name=ID content=ArgumentList<fctArg=false>;
+
+FieldDefinition: "Field" name =ID content=ArgumentList<fctArg=false>;
+
+LocalDefinition: "Local" name =ID content=ArgumentList<fctArg=false>;
+
+ArgumentList<fctArg>: args+=Argument<fctArg=fctArg> (','  args+=Argument<fctArg=fctArg>)*; //TODO parameter
+
+Argument<fctArg>: (varDef=VariableDef ('=' value=SimpleExpression)?) ;//| FunctionDefinition;
+
+VariableDef: name=ID ':' type=[BmxType|ID];
+
+MethodBlock returns BmxMethod:
+	"Method" name=ID 
+		fd=FunctionDefintion
+		(abstract?="abstract"|final?="final")?
+//		"("
+//			((parameters+=ParameterDefinition) (',' parameters+=ParameterDefinition)* )? 
+//		")"
+		content=StatementBlock
+	("EndMethod" | "End" "Method")
+;
+
+FunctionBlock:"Function" name=ID
+	fd=FunctionDefintion
+	content=StatementBlock
+	("EndFunction" | "End" "Function")
+;
+
+ParameterDefinition:
+	name=ID':' type=[BmxType|ID] ('='defaultValue=STRING)?//TODO other types
+;
+
+FunctionDefintion: {FunctionDefinition}(":" type=[BmxType|ID])? "(" args=ArgumentList<fctArg=true>? ")";
+
+StatementBlock:
+	{StatementBlock}
+	statements+=Statement*
+;
+
+Statement:
+	//ForBlock|
+	WhileBlock|RepeatBlock|ConstantDefinition|GlobalDefinion|LocalDefinition|IfBlock|
+	ReturnExpression|AssignmentExpression
+;
+
+AssignmentExpression:
+	var=[VariableDef|ID] ("="|"+="|"-="|"*="|":/"|":|") exp=Expression;
+
+ReturnExpression:
+	"Return" exp=Expression
+;
+
+WhileBlock:
+	"While" exp=Expression
+		content=StatementBlock
+	("EndWhile"|"End""While")
+;
+
+RepeatBlock:
+	"Repeat"
+		content=StatementBlock
+	("Forever"|"Until" exp=Expression)
+;
+
+IfBlock:
+	"If" ifexp=Expression
+	"Then"?
+	ifblock=StatementBlock
+	(("ElseIf"|"Else""If" elseIfExp+=Expression 
+		elseIfBlock+=StatementBlock
+	))*
+	("Else"
+		elseBlock=StatementBlock)?
+	("EndIf"|"End" "If")
+;
+
+
+Expression://TODO Actions
+	SimpleExpression
+	(("="|"not" "="| "<"|">"|"<="|">=") SimpleExpression)*
+;
+SimpleExpression://TODO
+	"Term"
+;
+
+FQN: ID('.'ID)*;
+
+@Override
+terminal ID: ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
+//terminal INT returns ecore::EInt: ('0'..'9')+;
+@Override
+terminal STRING:
+			'"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"' 
+		;
+@Override
+terminal ML_COMMENT : ('Rem'|'rem') -> ('EndRem'|'endrem'); //TODO ignorecase not working for terminals
+@Override
+terminal SL_COMMENT : "'" !('\n'|'\r')* ('\r'? '\n')?;
+
+@Override
+terminal WS         : (' '|'\t')+;
+
+terminal NL         : ('\r'|'\n')+;
+//terminal ANY_OTHER: .;
+	

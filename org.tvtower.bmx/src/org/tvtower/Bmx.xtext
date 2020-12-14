@@ -1,0 +1,214 @@
+grammar org.tvtower.Bmx with org.eclipse.xtext.common.Terminals
+//import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate bmx "http://www.tvtower.org/Bmx"
+
+BmxFile hidden (NL, WS, SL_COMMENT, ML_COMMENT, COMPILER_OPTION, EXIT):
+	{BmxFile}
+	statements=FileStatements;
+
+FileStatements:
+	{FileStatements}
+	text+=Anything
+	(
+		main+=MainStatement
+		text+=Anything
+	)*
+;	
+
+MainStatement: Modifier|FrameworkStatement|ModuleStatement|ModuleInfoStatement|ImportStatement|TypeBlock|StructBlock|FunctionBlock
+	|GlobalDefinion|ExternBlock|EnumType//|FieldDefinition|MethodBlock
+	//|OtherStatent - while, for,...
+;
+
+Modifier: modifier=("SuperStrict"|"Strict"|"public"|"private");
+
+ImportStatement: ("import"|"include"|"incbin") (importURI=STRING | importedNamespace=FQN);
+
+FrameworkStatement:"Framework" module=FQN;
+
+ModuleStatement:"Module" module=FQN;
+
+ModuleInfoStatement:"ModuleInfo" info=STRING;
+
+Annotation:"{"id=ID("="value=STRING)?"}";
+
+TypeBlock returns BmxType:
+	"Type" name=ID ("extends" supertype=[ BmxType | ID])? annotation=Annotation?
+		(abstract?="abstract"|final?="final")?
+		content+=TypeContent*
+	("EndType"| "End" "Type")
+;
+
+StructBlock returns BmxType:
+	"Struct" name=ID //("extends" supertype=[ BmxType | ID])? annotation=Annotation?
+//		(abstract?="abstract"|final?="final")?
+		content+=TypeContent*
+	("EndStruct"| "End" "Struct")
+;
+
+ExternBlock:
+	"Extern" id=STRING?
+		content+=ExternContent*
+	"End" "Extern"
+;
+
+ExternContent:FunctionDeclaration|ConstantDefinition|GlobalDefinion;
+
+FunctionDeclaration: "Function" name=ID fd=FunctionDefintion (value=ValueAssignment)?;
+
+TypeContent: ("private"|"public")? (ConstantDefinition|GlobalDefinion|FieldDefinition|MethodBlock|FunctionBlock);
+
+Anything:(ExpAnything|","|"Const"|"Local"|"Global"|SelectBlock|IfBlock|TryBlock|WhileBlock)*;
+ExpAnything:"="|ParamAnything|Parenthesized|Array;
+ParamAnything: (ANY_OTHER | ":" |"."| "+"| "-" |"Ptr"|"StaticArray"| INT| ID |STRING);
+
+ConstantDefinition:=>"Const" type = TypeDef ;//content=ArgumentList<fctArg=false>;
+
+GlobalDefinion: =>"Global" type=TypeDef annotation=Annotation?;//content=ArgumentList<fctArg=false>;
+
+FieldDefinition: =>"Field" (readOnly?="ReadOnly" | staticArray?="StaticArray")? types+=TypeDef (',' types+=TypeDef)* annotation=Annotation?;//content=ArgumentList<fctArg=false>;
+
+LocalDefinition: =>"Local" name = ID ref=TypeRefernce  val=ValueAssignment?;//content=ArgumentList<fctArg=false>;
+
+TypeDef: name = ID
+	(
+		(ref=TypeRefernce (val=ValueAssignment | (callback=CallBack array?=Array?))?) 
+		| (callback=CallBack array?=Array?) 
+		| "."".""."
+	)?
+;
+
+EnumType:
+	"Enum" name=ID ":" type=[BmxType|ID] //("Flags")? not a keyword really
+		(eName+=ID val+=ValueAssignment?)*
+	("End" "Enum" | "EndEnum")
+	;
+
+TypeRefernce:
+	=>":" type=[BmxType|ID] isArray?=Array? (isPointer?="Ptr" |isVar?="var")?
+;
+
+ValueAssignment:
+	=>"=" (=>ExpAnything)*
+;
+
+//ArgumentList<fctArg>: 
+//	content+=ParamAnything+ val+=ValueAssignment? (','content+=ParamAnything+ val+=ValueAssignment?)*
+//	//args+=Argument<fctArg=fctArg> (','  args+=Argument<fctArg=fctArg>)* //TODO parameter
+//;
+//VariableDef: name=ID ':' type=[BmxType|ID];
+
+MethodBlock returns BmxMethod:
+	"Method" name=ID 
+		fd=FunctionDefintion
+		(
+			annotation=Annotation?
+			(
+				(final?="final")?
+		//		"("
+		//			((parameters+=ParameterDefinition) (',' parameters+=ParameterDefinition)* )? 
+		//		")"
+		//		content=StatementBlock
+				content=BlockContent
+				("EndMethod" | "End" "Method")
+			
+			)
+			|
+			(abstract?="abstract" annotation=Annotation?)
+		)
+;
+
+FunctionBlock returns BmxFunction:"Function" name=ID
+	fd=FunctionDefintion annotation=Annotation?
+//	content=StatementBlock
+	content=BlockContent
+	("EndFunction" | "End" "Function")
+;
+
+BlockContent:
+	(text+=Anything)
+	(function+=FunctionBlock
+	(text+=Anything))*
+;
+
+SelectBlock:
+	"Select"
+		Anything
+	(=>("EndSelect" | "End" "Select"))
+;
+
+WhileBlock:
+	"While"
+		Anything
+	(=>("Wend" | "End" "While"))
+;
+
+IfBlock:
+	=>"If" (Anything)
+//	(
+//		(=>"Then" Anything)
+//			|
+//		(
+//			Anything
+//			(
+//				(=>("Else" "If") ExpAnything* Anything)
+//					|
+//				Anything
+//			)
+			(=> ("EndIf" | ("End" "If")))?
+//		)
+//	)
+;
+
+TryBlock:
+	"try" Anything 
+	(=>("EndTry" | "End" "Try"))
+;
+
+Parenthesized:=>"(" (ExpAnything+ ("," ExpAnything*)*)?")";
+Array:(=>"["ExpAnything* ("," ExpAnything*)*"]")+;
+
+FunctionDefintion: (TypeRefernce)? "("(param+=Parameter ("," param+=Parameter)*)?")";
+
+//TODO sehr ähnlich zu TypeDef
+Parameter: id=ID 
+	(
+		type=TypeRefernce? callback=CallBack? value=ValueAssignment?
+	)
+;
+
+CallBack: {CallBack}"("(param+=Parameter ("," param+=Parameter)*)?")";
+
+FQN: ID=>('.'ID)*;
+
+@Override
+terminal ID: ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
+//terminal INT returns ecore::EInt: ('0'..'9')+;
+@Override
+terminal STRING:
+			//'"' ( '\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\'|'"') )* '"' 
+			'"' !('"')* '"'
+		;
+/*
+ * ignore case does not work for terminals
+ * 
+ * white space after rem, otherwise function names etc. starting with rem will be tokenized incorrectly
+ */
+@Override
+terminal ML_COMMENT : ('Rem'|'rem'|'REM')(' '|'\t'|'\r'|'\n') -> ('EndRem'|'endrem'|'endRem'|'ENDREM'|'End Rem'|'end rem'|'END REM'); 
+
+@Override
+terminal SL_COMMENT : "'" !('\n'|'\r')* ('\r'? '\n')?;
+
+//treat compiler options as hidden terminal
+terminal COMPILER_OPTION:"?" !('\n'|'\r')* ('\r'? '\n')?;
+//hack for catching single "End"
+terminal EXIT:("End"|"end")('\r'? '\n')?;
+
+@Override
+terminal WS         : (' '|'\t')+;
+
+terminal NL         : ('\r'|'\n')+;
+//terminal ANY_OTHER: .;
+	

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.tvtower.bmx.ide
+Bundle-ManifestVersion: 2
+Bundle-Name: org.tvtower.bmx.ide
+Bundle-Version: 0.1.0.qualifier
+Bundle-SymbolicName: org.tvtower.bmx.ide; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.tvtower.bmx,
+ org.eclipse.xtext.ide,
+ org.eclipse.xtext.xbase.ide,
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.tvtower.ide.contentassist.antlr,
+ org.tvtower.ide.contentassist.antlr.internal,
+ org.tvtower.ide.contentassist.antlr.lexer
