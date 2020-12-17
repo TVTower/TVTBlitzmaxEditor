@@ -190,12 +190,14 @@ class BmxParsingTest {
 		'''
 			Extern "C"
 				Const c
-				Const d, e
 				Function f:int(p1:int)
 				Global g:int
-				Global h, i
 				Function f2:String() = "tada"
 			End Extern
+			Extern
+				Const d, e
+				Global h, i
+			EndExtern
 		'''.noErrors
 	}
 
@@ -310,6 +312,9 @@ class BmxParsingTest {
 				While 2=2
 					print "tidum"
 				Wend
+				While 3=3
+					print "tadum"
+				EndWhile
 			End Function
 		'''.noErrors
 	}

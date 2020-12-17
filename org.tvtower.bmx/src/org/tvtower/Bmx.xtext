@@ -54,7 +54,7 @@ TypesContainer: ConstantDefinition|GlobalDefinion|FieldDefinition;
 ExternBlock:
 	"Extern" id=STRING?
 		content+=ExternContent*
-	"End" "Extern"
+	("EndExtern" | "End" "Extern")
 ;
 
 
@@ -148,7 +148,7 @@ SelectBlock:
 WhileBlock:
 	"While"
 		Anything
-	(=>("Wend" | "End" "While"))
+	(=>("EndWhile" | "Wend" | "End" "While"))
 ;
 
 IfBlock:
