@@ -270,9 +270,11 @@ class BmxParsingTest {
 	@Test
 	def void parameterContinue() {
 		'''
-			Function f0:int(param1:int, ..
+			Function f0:int(..
+				param1:int, ..
 				param2:string, ..
-				param3:byte)
+				param3:byte ..
+				)
 				return 0
 			End Function
 		'''.noErrors
