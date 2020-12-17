@@ -250,6 +250,21 @@ class BmxParsingTest {
 			End Function
 		'''.noErrors
 	}
+
+	@Test
+	def void idModifiers() {
+		'''
+			Function f%:int(variable%)
+			End Function
+
+			Function f$:int(param1$z)
+			End Function
+
+			Function f#:int(param1@Ptr)
+			End Function
+		'''.noErrors
+	}
+
 	@Test
 	def void parameterContinue() {
 		'''

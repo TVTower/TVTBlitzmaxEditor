@@ -58,13 +58,13 @@ ExternBlock:
 
 ExternContent:FunctionDeclaration|ConstantDefinition|GlobalDefinion;
 
-FunctionDeclaration: "Function" name=ID fd=FunctionDefintion (value=ValueAssignment)?;
+FunctionDeclaration: "Function" name=ID IdModifier? fd=FunctionDefintion (value=ValueAssignment)?;
 
 TypeContent: ("private"|"public")? (ConstantDefinition|GlobalDefinion|FieldDefinition|MethodBlock|FunctionBlock);
 
 Anything:(ExpAnything|","|"Const"|"Local"|"Global"|SelectBlock|IfBlock|TryBlock|WhileBlock)*;
 ExpAnything:"="|ParamAnything|Parenthesized|Array;
-ParamAnything: (ANY_OTHER | ":" |"."| "+"| "-" |"Ptr"|"StaticArray"| INT| ID |STRING);
+ParamAnything: (ANY_OTHER | ":" |"."| "+"| "-" | "$" | "%" | "#" | "@" | "Ptr" | "StaticArray" | INT| ID |STRING);
 
 ConstantDefinition:=>"Const" type = TypeDef ;//content=ArgumentList<fctArg=false>;
 
@@ -74,7 +74,7 @@ FieldDefinition: =>"Field" (readOnly?="ReadOnly" | staticArray?="StaticArray")? 
 
 LocalDefinition: =>"Local" name = ID ref=TypeRefernce  val=ValueAssignment?;//content=ArgumentList<fctArg=false>;
 
-TypeDef: name = ID
+TypeDef: name = ID IdModifier?
 	(
 		(ref=TypeRefernce (val=ValueAssignment | (callback=CallBack array?=Array?))?) 
 		| (callback=CallBack array?=Array?) 
@@ -103,7 +103,7 @@ ValueAssignment:
 //VariableDef: name=ID ':' type=[BmxType|ID];
 
 MethodBlock returns BmxMethod:
-	"Method" name=ID 
+	"Method" name=ID IdModifier?
 		fd=FunctionDefintion
 		(
 			annotation=Annotation?
@@ -122,7 +122,7 @@ MethodBlock returns BmxMethod:
 		)
 ;
 
-FunctionBlock returns BmxFunction:"Function" name=ID
+FunctionBlock returns BmxFunction:"Function" name=ID IdModifier?
 	fd=FunctionDefintion annotation=Annotation?
 //	content=StatementBlock
 	content=BlockContent
@@ -175,11 +175,13 @@ Array:(=>"["ExpAnything* ("," ExpAnything*)*"]")+;
 FunctionDefintion hidden (WS, SL_COMMENT, ML_COMMENT): (TypeRefernce)? "("(param+=Parameter ("," ('.''.'NL)? param+=Parameter)*)?")";
 
 //TODO sehr ähnlich zu TypeDef
-Parameter: id=ID 
+Parameter: id=ID IdModifier?
 	(
 		type=TypeRefernce? callback=CallBack? value=ValueAssignment?
 	)
 ;
+
+IdModifier hidden(): "%"|("$" ID?)|"#"|"@""Ptr";
 
 CallBack: {CallBack}"("(param+=Parameter ("," param+=Parameter)*)?")";
 
