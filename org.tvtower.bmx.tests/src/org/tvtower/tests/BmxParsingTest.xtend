@@ -231,6 +231,10 @@ class BmxParsingTest {
 				Field f2:int[] = [1, fct.call(1,[1,2])]
 				Field StaticArray f3:int[][]
 				Field f4:int[,]
+				Field f5:int[..
+					1, ..
+					2 ..
+					]
 			End Type
 		'''.noErrors
 		}

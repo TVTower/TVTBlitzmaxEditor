@@ -174,7 +174,7 @@ TryBlock:
 ;
 
 Parenthesized:=>"(" (ExpAnything+ ("," ExpAnything*)*)?")";
-Array:(=>"["ExpAnything* ("," ExpAnything*)*"]")+;
+Array hidden(WS, SL_COMMENT, ML_COMMENT):(=>"[" ('.''.'NL)? ExpAnything* ("," ('.''.'NL)? ExpAnything*)* ('.''.'NL)?"]")+;
 
 FunctionDefintion hidden (WS, SL_COMMENT, ML_COMMENT): (TypeRefernce)? "("(('.''.'NL)? param+=Parameter ("," ('.''.'NL)? param+=Parameter)*)? ('.''.'NL)?")";
 
