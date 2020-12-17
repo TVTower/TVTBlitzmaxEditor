@@ -81,6 +81,7 @@ TypeDef: name = ID IdModifier?
 	(
 		(ref=TypeRefernce (val=ValueAssignment | (callback=CallBack array?=Array?))?) 
 		| (callback=CallBack array?=Array?)
+		| array?=Array
 		| val=ValueAssignment
 		| "."".""."
 	)?
@@ -181,7 +182,7 @@ FunctionDefintion hidden (WS, SL_COMMENT, ML_COMMENT): (TypeRefernce)? "("(('.''
 //TODO sehr ähnlich zu TypeDef
 Parameter: id=ID IdModifier?
 	(
-		type=TypeRefernce? isVar?="Var"? callback=CallBack? value=ValueAssignment?
+		type=TypeRefernce? isVar?="Var"? callback=CallBack?  isArray?=Array? value=ValueAssignment?
 	)
 ;
 

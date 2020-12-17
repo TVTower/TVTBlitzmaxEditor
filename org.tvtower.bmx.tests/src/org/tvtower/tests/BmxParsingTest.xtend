@@ -235,6 +235,7 @@ class BmxParsingTest {
 					1, ..
 					2 ..
 					]
+				Field f6[2]
 			End Type
 		'''.noErrors
 		}
@@ -248,13 +249,13 @@ class BmxParsingTest {
 			Function f1:int(param1:String, param2 var, arr:int[] var)
 			End Function
 
-			Function f2:int(param1:String[]= ["1","2"])
+			Function f2:int(param1:String[]= ["1","2"], param2#[])
 			End Function
 
 			Function f3:int(param1:int = 5, param2:String=New Call.Fkt("tada"))
 			End Function
 
-			Function f4:int(param1:int(cb:String,cb2:int), param1(cb:String,cb2:int), param2:String=New Call.Fkt("tada"))
+			Function f4:int(param1:int(cb:String,cb2:int), param2(cb:String,cb2:int), param2:String=New Call.Fkt("tada"))
 			End Function
 		'''.noErrors
 	}
