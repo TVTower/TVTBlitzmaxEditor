@@ -172,7 +172,7 @@ TryBlock:
 Parenthesized:=>"(" (ExpAnything+ ("," ExpAnything*)*)?")";
 Array:(=>"["ExpAnything* ("," ExpAnything*)*"]")+;
 
-FunctionDefintion: (TypeRefernce)? "("(param+=Parameter ("," param+=Parameter)*)?")";
+FunctionDefintion hidden (WS, SL_COMMENT, ML_COMMENT): (TypeRefernce)? "("(param+=Parameter ("," ('.''.'NL)? param+=Parameter)*)?")";
 
 //TODO sehr ähnlich zu TypeDef
 Parameter: id=ID 
