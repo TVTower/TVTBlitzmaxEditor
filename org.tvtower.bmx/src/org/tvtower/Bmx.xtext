@@ -185,7 +185,7 @@ Parameter: id=ID IdModifier?
 	)
 ;
 
-IdModifier hidden(): "%"|("$" ID?)|"#"|"@""Ptr";
+IdModifier hidden(): "%"|("$" ID?)|"#"|"@" "Ptr"?;
 
 CallBack: {CallBack}"("(param+=Parameter ("," param+=Parameter)*)?")";
 

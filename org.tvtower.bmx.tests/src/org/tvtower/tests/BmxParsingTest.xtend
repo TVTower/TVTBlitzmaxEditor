@@ -266,6 +266,9 @@ class BmxParsingTest {
 
 			Function f#:int(param1@Ptr)
 			End Function
+
+			Function f2#:int(param1@)
+			End Function
 		'''.noErrors
 	}
 
