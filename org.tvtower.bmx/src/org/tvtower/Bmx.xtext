@@ -77,7 +77,8 @@ LocalDefinition: =>"Local" name = ID ref=TypeRefernce  val=ValueAssignment?;//co
 TypeDef: name = ID IdModifier?
 	(
 		(ref=TypeRefernce (val=ValueAssignment | (callback=CallBack array?=Array?))?) 
-		| (callback=CallBack array?=Array?) 
+		| (callback=CallBack array?=Array?)
+		| val=ValueAssignment
 		| "."".""."
 	)?
 ;

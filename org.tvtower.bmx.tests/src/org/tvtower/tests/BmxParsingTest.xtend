@@ -149,7 +149,7 @@ class BmxParsingTest {
 				Field f3:int = Some.CONSTANT
 				Field f4:String
 				Field f4:String = ""
-				Field f5:String = "s1" + "s2"
+				Field f5 = "s1" + "s2"
 				Field f6:String = New SomeType.Create("init")
 				Field f7:String = New SomeType.Create("init", 230, TRUE)
 				Field f8:int = -1.23
