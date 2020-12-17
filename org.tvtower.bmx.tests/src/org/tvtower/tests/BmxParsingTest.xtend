@@ -190,8 +190,10 @@ class BmxParsingTest {
 		'''
 			Extern "C"
 				Const c
+				Const d, e
 				Function f:int(p1:int)
 				Global g:int
+				Global h, i
 				Function f2:String() = "tada"
 			End Extern
 		'''.noErrors

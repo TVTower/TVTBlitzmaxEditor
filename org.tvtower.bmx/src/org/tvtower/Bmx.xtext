@@ -49,6 +49,7 @@ StructBlock returns BmxStruct:
 	("EndStruct"| "End" "Struct")
 ;
 
+TypesContainer: ConstantDefinition|GlobalDefinion|FieldDefinition;
 
 ExternBlock:
 	"Extern" id=STRING?
@@ -56,19 +57,21 @@ ExternBlock:
 	"End" "Extern"
 ;
 
-ExternContent:FunctionDeclaration|ConstantDefinition|GlobalDefinion;
+
+ExternContent: FunctionDeclaration|TypesContainer;
 
 FunctionDeclaration: "Function" name=ID IdModifier? fd=FunctionDefintion (value=ValueAssignment)?;
 
-TypeContent: ("private"|"public")? (ConstantDefinition|GlobalDefinion|FieldDefinition|MethodBlock|FunctionBlock);
+
+TypeContent: ("private"|"public")? (TypesContainer|MethodBlock|FunctionBlock);
 
 Anything:(ExpAnything|","|"Const"|"Local"|"Global"|SelectBlock|IfBlock|TryBlock|WhileBlock)*;
 ExpAnything:"="|ParamAnything|Parenthesized|Array;
 ParamAnything: (ANY_OTHER | ":" |"."| "+"| "-" | "$" | "%" | "#" | "@" | "Ptr" | "Var" | "StaticArray" | INT| ID |STRING);
 
-ConstantDefinition:=>"Const" type = TypeDef ;//content=ArgumentList<fctArg=false>;
+ConstantDefinition:=>"Const"  types+=TypeDef (',' types+=TypeDef)* ;//content=ArgumentList<fctArg=false>;
 
-GlobalDefinion: =>"Global" type=TypeDef annotation=Annotation?;//content=ArgumentList<fctArg=false>;
+GlobalDefinion: =>"Global" types+=TypeDef (',' types+=TypeDef)* annotation=Annotation?;//content=ArgumentList<fctArg=false>;
 
 FieldDefinition: =>"Field" (readOnly?="ReadOnly" | staticArray?="StaticArray")? types+=TypeDef (',' types+=TypeDef)* annotation=Annotation?;//content=ArgumentList<fctArg=false>;
 

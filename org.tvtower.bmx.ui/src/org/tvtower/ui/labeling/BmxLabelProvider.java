@@ -42,14 +42,6 @@ public class BmxLabelProvider extends DefaultEObjectLabelProvider {
 		return "extern";
 	}
 
-	String text(GlobalDefinion g) {
-		return (String)doGetText(g.getType());
-	}
-
-	String text(ConstantDefinition g) {
-		return (String)doGetText(g.getType());
-	}
-
 	String image(BmxType type) {
 		return "type.png";
 	}

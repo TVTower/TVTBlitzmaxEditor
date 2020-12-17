@@ -24,6 +24,7 @@ import org.tvtower.bmx.LocalDefinition;
 import org.tvtower.bmx.Modifier;
 import org.tvtower.bmx.TypeDef;
 import org.tvtower.bmx.TypeLikeBlock;
+import org.tvtower.bmx.TypesContainer;
 
 /**
  * Customization of the default outline structure.
@@ -58,20 +59,12 @@ public class BmxOutlineTreeProvider extends DefaultOutlineTreeProvider {
 		final List<EObject> methodsEtc = new ArrayList<>();
 		final List<EObject> all = new ArrayList<>();
 		type.eContents().forEach(c -> {
-			// I tried using a common Supertype, but for some reason the commen types field
-			// was not extracted to the interface
 			if (c instanceof LocalDefinition) {
 				members.add(c);
 				all.add(c);
-			} else if (c instanceof GlobalDefinion) {
-				members.add(((GlobalDefinion) c).getType());
-				all.add(((GlobalDefinion) c).getType());
-			} else if (c instanceof FieldDefinition) {
-				members.addAll(((FieldDefinition) c).getTypes());
-				all.addAll(((FieldDefinition) c).getTypes());
-			} else if (c instanceof ConstantDefinition) {
-				members.add(((ConstantDefinition) c).getType());
-				all.add(((ConstantDefinition) c).getType());
+			} else if (c instanceof TypesContainer) {
+				members.addAll(((TypesContainer) c).getTypes());
+				all.addAll(((TypesContainer) c).getTypes());
 			} else {
 				methodsEtc.add(c);
 				all.add(c);
