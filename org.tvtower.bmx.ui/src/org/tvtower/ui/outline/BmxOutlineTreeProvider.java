@@ -14,15 +14,16 @@ import org.tvtower.bmx.Annotation;
 import org.tvtower.bmx.BmxFile;
 import org.tvtower.bmx.BmxFunction;
 import org.tvtower.bmx.BmxMethod;
-import org.tvtower.bmx.BmxType;
 import org.tvtower.bmx.ConstantDefinition;
 import org.tvtower.bmx.FieldDefinition;
+import org.tvtower.bmx.FrameworkStatement;
 import org.tvtower.bmx.FunctionDeclaration;
 import org.tvtower.bmx.GlobalDefinion;
 import org.tvtower.bmx.ImportStatement;
 import org.tvtower.bmx.LocalDefinition;
 import org.tvtower.bmx.Modifier;
 import org.tvtower.bmx.TypeDef;
+import org.tvtower.bmx.TypeLikeBlock;
 
 /**
  * Customization of the default outline structure.
@@ -37,7 +38,9 @@ public class BmxOutlineTreeProvider extends DefaultOutlineTreeProvider {
 		if (model.getStatements() != null && !model.getStatements().getMain().isEmpty()) {
 			for (EObject element : model.getStatements().getMain()) {
 				boolean show=true;
-				if(element instanceof ImportStatement) {
+				if(element instanceof FrameworkStatement) {
+					show=false;
+				}else if(element instanceof ImportStatement) {
 					show=false;
 				}else if(element instanceof Modifier) {
 					show=false;
@@ -49,32 +52,44 @@ public class BmxOutlineTreeProvider extends DefaultOutlineTreeProvider {
 		}
 	}
 
-	//artificial parent for type members
-	protected void _createChildren(IOutlineNode parentNode, BmxType type) {
-		List<EObject> members=new ArrayList<>();
-		List<EObject> methodsEtc=new ArrayList<>();
-		type.eContents().forEach(c->{
-			//I tried using a common Supertype, but for some reason the commen types field was not extracted to the interface
-			if(c instanceof LocalDefinition) {
+	//artificial parent for type members if there are more than 2
+	protected void _createChildren(IOutlineNode parentNode, TypeLikeBlock type) {
+		List<EObject> members = new ArrayList<>();
+		final List<EObject> methodsEtc = new ArrayList<>();
+		final List<EObject> all = new ArrayList<>();
+		type.eContents().forEach(c -> {
+			// I tried using a common Supertype, but for some reason the commen types field
+			// was not extracted to the interface
+			if (c instanceof LocalDefinition) {
 				members.add(c);
-			} else if( c instanceof GlobalDefinion) {
-				members.add(((GlobalDefinion)c).getType());
-			} else if(c instanceof FieldDefinition){
-				members.addAll(((FieldDefinition)c).getTypes());
-			}else if(c instanceof ConstantDefinition){
-				members.add(((ConstantDefinition)c).getType());
-			}else {
+				all.add(c);
+			} else if (c instanceof GlobalDefinion) {
+				members.add(((GlobalDefinion) c).getType());
+				all.add(((GlobalDefinion) c).getType());
+			} else if (c instanceof FieldDefinition) {
+				members.addAll(((FieldDefinition) c).getTypes());
+				all.addAll(((FieldDefinition) c).getTypes());
+			} else if (c instanceof ConstantDefinition) {
+				members.add(((ConstantDefinition) c).getType());
+				all.add(((ConstantDefinition) c).getType());
+			} else {
 				methodsEtc.add(c);
+				all.add(c);
 			}
 		});
-		if(!members.isEmpty()) {
-			IOutlineNode memberParent=createEObjectNode(parentNode, type, labelProvider.getImage("members"), "members", false);
+		if (members.size() > 2 && !methodsEtc.isEmpty()) {
+			IOutlineNode memberParent = createEObjectNode(parentNode, type, labelProvider.getImage("members"),
+					"members", false);
 			for (EObject c : members) {
 				createNode(memberParent, c);
 			}
-		}
-		for (EObject c : methodsEtc) {
-			createNode(parentNode, c);
+			for (EObject c : methodsEtc) {
+				createNode(parentNode, c);
+			}
+		} else {
+			for (EObject c : all) {
+				createNode(parentNode, c);
+			}
 		}
 	}
 

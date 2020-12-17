@@ -28,12 +28,12 @@ Zum einen liefert sie nur wenig hilfreiches und ist bei den großen Dateien zu l
 
 ## TODOs
 
+* Sprachdefinition ID mit Dollar, Pozent und @Ptr prüfen
 * Syntax
     * Local, Global in File modelliert - Navigation aus Methode heraus
 * Default-Import statt Warnungen unterdrücken (Auslieferung im Plugin)
 * F3 auf Imports ermöglichen (zur Datei springen)
-* file members für outline auch zusammenfassen
-    * zusammenfassen nur wenn mehr als 3 Member
+* file members für outline auch zusammenfassen?
 * noch mehr Schlüsselworte ins "Anything" (highlighting)
 
 * update site bauen und veröffentlichen

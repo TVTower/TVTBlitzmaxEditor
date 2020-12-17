@@ -8,8 +8,10 @@ import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider;
 import org.tvtower.bmx.BmxFunction;
 import org.tvtower.bmx.BmxMethod;
+import org.tvtower.bmx.BmxStruct;
 import org.tvtower.bmx.BmxType;
 import org.tvtower.bmx.ConstantDefinition;
+import org.tvtower.bmx.EnumType;
 import org.tvtower.bmx.ExternBlock;
 import org.tvtower.bmx.FieldDefinition;
 import org.tvtower.bmx.FunctionDeclaration;
@@ -49,7 +51,11 @@ public class BmxLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String image(BmxType type) {
-		return "type.gif";
+		return "type.png";
+	}
+
+	String image(BmxStruct type) {
+		return "struct.png";
 	}
 
 	String image(ConstantDefinition constant) {
@@ -80,8 +86,16 @@ public class BmxLabelProvider extends DefaultEObjectLabelProvider {
 		return "function.gif";
 	}
 
+	String image(ExternBlock ext) {
+		return "extern.png";
+	}
+
 	String image(FunctionDeclaration fct) {
-		return "function.gif";
+		return "function_decl.png";
+	}
+
+	String image(EnumType e) {
+		return "enum.png";
 	}
 
 	//hack for artificial nodes

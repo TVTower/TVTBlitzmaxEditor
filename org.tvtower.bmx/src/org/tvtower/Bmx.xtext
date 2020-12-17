@@ -16,7 +16,9 @@ FileStatements:
 	)*
 ;	
 
-MainStatement: Modifier|FrameworkStatement|ModuleStatement|ModuleInfoStatement|ImportStatement|TypeBlock|StructBlock|FunctionBlock
+TypeLikeBlock:TypeBlock|StructBlock;
+
+MainStatement: Modifier|FrameworkStatement|ModuleStatement|ModuleInfoStatement|ImportStatement|TypeLikeBlock|FunctionBlock
 	|GlobalDefinion|ExternBlock|EnumType//|FieldDefinition|MethodBlock
 	//|OtherStatent - while, for,...
 ;
@@ -40,12 +42,13 @@ TypeBlock returns BmxType:
 	("EndType"| "End" "Type")
 ;
 
-StructBlock returns BmxType:
+StructBlock returns BmxStruct:
 	"Struct" name=ID //("extends" supertype=[ BmxType | ID])? annotation=Annotation?
 //		(abstract?="abstract"|final?="final")?
 		content+=TypeContent*
 	("EndStruct"| "End" "Struct")
 ;
+
 
 ExternBlock:
 	"Extern" id=STRING?
