@@ -237,7 +237,7 @@ class BmxParsingTest {
 			Function f0:int(noType)
 			End Function
 
-			Function f1:int(param1:String, arr:int[] var)
+			Function f1:int(param1:String, param2 var, arr:int[] var)
 			End Function
 
 			Function f2:int(param1:String[]= ["1","2"])

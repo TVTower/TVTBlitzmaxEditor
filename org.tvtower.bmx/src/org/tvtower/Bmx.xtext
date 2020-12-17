@@ -64,7 +64,7 @@ TypeContent: ("private"|"public")? (ConstantDefinition|GlobalDefinion|FieldDefin
 
 Anything:(ExpAnything|","|"Const"|"Local"|"Global"|SelectBlock|IfBlock|TryBlock|WhileBlock)*;
 ExpAnything:"="|ParamAnything|Parenthesized|Array;
-ParamAnything: (ANY_OTHER | ":" |"."| "+"| "-" | "$" | "%" | "#" | "@" | "Ptr" | "StaticArray" | INT| ID |STRING);
+ParamAnything: (ANY_OTHER | ":" |"."| "+"| "-" | "$" | "%" | "#" | "@" | "Ptr" | "Var" | "StaticArray" | INT| ID |STRING);
 
 ConstantDefinition:=>"Const" type = TypeDef ;//content=ArgumentList<fctArg=false>;
 
@@ -89,7 +89,7 @@ EnumType:
 	;
 
 TypeRefernce:
-	=>":" type=[BmxType|ID] isArray?=Array? (isPointer?="Ptr" |isVar?="var")?
+	=>":" type=[BmxType|ID] isArray?=Array? isPointer?="Ptr"?
 ;
 
 ValueAssignment:
@@ -177,7 +177,7 @@ FunctionDefintion hidden (WS, SL_COMMENT, ML_COMMENT): (TypeRefernce)? "("(param
 //TODO sehr ähnlich zu TypeDef
 Parameter: id=ID IdModifier?
 	(
-		type=TypeRefernce? callback=CallBack? value=ValueAssignment?
+		type=TypeRefernce? isVar?="Var"? callback=CallBack? value=ValueAssignment?
 	)
 ;
 
