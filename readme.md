@@ -2,6 +2,8 @@ Dieser Xtext-Editor soll die Entwicklung von TVTower mit Eclipse unterstützten.
 Die Sprache wird nicht komplett unterstützt.
 Ziel ist aber insb. eine schnellere Navigation innerhalb einer Datei (Outline und Quick-Outline) und das leichtere Auffinden von Typen (shift-ctrl F3 - Find Model Element).
 
+Für das Aufsetzen der Entwicklungsumgebung kann die Oomph-Setup-Datei `https://raw.githubusercontent.com/TVTower/TVTBlitzmaxEditor/master/TVTBlitzmax.setup` verwendet werden (URL kopieren und als Github-Projekt anlegen).
+
 Etwas Syntax-Highlighting bekommt man geschenkt sowie die Navigation zu (selbstdefinierten) Typen (Methoden/Funktionsdeklaration und Parameter).
 
 Die Autovervollständigung sollte nicht verwendet werden.
@@ -36,6 +38,3 @@ Zum einen liefert sie nur wenig hilfreiches und ist bei den großen Dateien zu l
 * noch mehr Schlüsselworte ins "Anything" (highlighting)
 
 * update site bauen und veröffentlichen
-* Oomph-Setup
-    * Editor
-    * clonen von TVTower und Loc-Tool
