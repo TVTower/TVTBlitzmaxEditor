@@ -233,6 +233,7 @@ class BmxParsingTest {
 				Field f4:int[,]
 				Field f5:int[..
 					1, ..
+					..
 					2 ..
 					]
 				Field f6[2]

@@ -175,9 +175,9 @@ TryBlock:
 ;
 
 Parenthesized:=>"(" (ExpAnything+ ("," ExpAnything*)*)?")";
-Array hidden(WS, SL_COMMENT, ML_COMMENT):(=>"[" ('.''.'NL)? ExpAnything* ("," ('.''.'NL)? ExpAnything*)* ('.''.'NL)?"]")+;
+Array hidden(WS, SL_COMMENT, ML_COMMENT):(=>"[" ('.''.'NL)* ExpAnything* (('.''.'NL)* "," ('.''.'NL)* ExpAnything*)* ('.''.'NL)*"]")+;
 
-FunctionDefintion hidden (WS, SL_COMMENT, ML_COMMENT): (TypeRefernce)? "("(('.''.'NL)? param+=Parameter ("," ('.''.'NL)? param+=Parameter)*)? ('.''.'NL)?")";
+FunctionDefintion hidden (WS, SL_COMMENT, ML_COMMENT): (TypeRefernce)? "("(('.''.'NL)* param+=Parameter ("," ('.''.'NL)* param+=Parameter)*)? ('.''.'NL)*")";
 
 //TODO sehr ähnlich zu TypeDef
 Parameter: id=ID IdModifier?
