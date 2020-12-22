@@ -24,11 +24,10 @@ Zum einen liefert sie nur wenig hilfreiches und ist bei den großen Dateien zu l
 ## Was geht nicht
 
 * Die verschiedenen Varianten zum Abschließen eines Blocks sind aus Tooling-Bau-Sicht ein Graus. Mit Leerzeichen getrennte Schlüsselwörter mit gleinem Präfix `End X` machen das Leben unnötig schwer. Warum nicht einfach immer `EndMethod`, `EndIf`... Den Programmabbruch mit `End` fange ich aktuell ab, indem ich `End` sofort gefolgt von einem Zeilenumbruch als separates Token behandele, das vor dem Parser versteckt wird.
-* Die Compileroptionen können nicht vollstänndig unterstützt werden. Im Moment fange ich sie einfach weg. Das geht insb. in den Fällen schief, wo nur die Methodensignatur ausgetauscht wird, der Body aber erhalten bleibt (2xStart aber nur einmal Ende).
+* Die Compileroptionen können semantisch nicht unterstützt werden. Im Moment fange ich sie einfach weg. Für den Fall dass es zwei Varianten der Methodensignatur gibt, aber der Body erhalten bleibt, wurde der Lexer so angepasst, dass nur die letzte Signatur für den Parser sichtbar ist. Damit bleibt die Struktur syntaktisch korrekt; auch wenn vielleicht die falsche Option gewählt wurde.
 
 ## TODOs
 
-* Sprachdefinition ID mit Dollar, Pozent und @Ptr prüfen
 * Syntax
     * Local, Global in File modelliert - Navigation aus Methode heraus
 * Default-Import statt Warnungen unterdrücken (Auslieferung im Plugin)
@@ -40,4 +39,3 @@ Zum einen liefert sie nur wenig hilfreiches und ist bei den großen Dateien zu l
 * Oomph-Setup
     * Editor
     * clonen von TVTower und Loc-Tool
-* fragen wegen Start-Character - aus Dateien raus oder als hidden Token unterdrücken

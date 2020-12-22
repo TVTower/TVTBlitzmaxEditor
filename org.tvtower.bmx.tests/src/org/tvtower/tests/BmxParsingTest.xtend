@@ -412,6 +412,22 @@ class BmxParsingTest {
 		'''.noErrors
 	}
 
+	@Test
+	def void apiCompilerOption() {
+		'''
+			?ptr64
+				Function Base36:String( val:Long )
+					Const size:Int = 13
+			?Not ptr64
+				Function Base36:String( val:Int )
+					Const size:Int = 6
+			?
+					Local vLong:Long = $FFFFFFFFFFFFFFFF & Long(Byte Ptr(val))
+			End Function
+		'''.noErrors
+	}
+	
+
 	def void noErrors(CharSequence content){
 		val result = parseHelper.parse(content)
 		Assertions.assertNotNull(result)
