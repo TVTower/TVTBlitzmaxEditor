@@ -5,6 +5,7 @@ package org.tvtower.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.xtext.ui.editor.autoedit.AbstractEditStrategyProvider;
+import org.eclipse.xtext.ui.editor.hyperlinking.IHyperlinkHelper;
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -18,5 +19,9 @@ public class BmxUiModule extends AbstractBmxUiModule {
 	@Override
 	public Class<? extends AbstractEditStrategyProvider> bindAbstractEditStrategyProvider() {
 		return BmxEditStrategyProvider.class;
+	}
+
+	public Class<? extends IHyperlinkHelper> bindHyperlinkHelper() {
+		return BmxHyperlinkHelper.class;
 	}
 }
