@@ -106,12 +106,18 @@ class BmxParsingTest {
 
 				Method AbstractMethod2:int() abstract
 
+				Private
+
 				Method m1()
 				End Method
+
+				Protected
 
 				Method m1:int()
 					Return 20
 				End Method
+
+				Public
 
 			End Type
 
@@ -122,6 +128,19 @@ class BmxParsingTest {
 				Function RemoveSomething:int()
 					Return 20
 				End Function
+			End Type
+		'''.noErrors
+	}
+
+	@Test
+	def void generics() {
+		'''
+			Type MyType<T> extends OtherType<T>
+
+			End Type
+
+			Type MyType2<T,U> implements OtherType2<T,U>
+
 			End Type
 		'''.noErrors
 	}
@@ -154,6 +173,7 @@ class BmxParsingTest {
 				Field f7:String = New SomeType.Create("init", 230, TRUE)
 				Field f8:int = -1.23
 				Field f9:int = fct.call(a + b, b - c, -1)
+				Field f10:Itf<Somthing>
 			End Type
 		'''.noErrors
 	}
@@ -209,6 +229,12 @@ class BmxParsingTest {
 				Val2=2
 				Val3=7
 			End Enum
+
+			Enum Another Flags
+				Val1
+				Val2=2
+				Val3=7
+			End Enum
 		'''.noErrors
 	}
 
@@ -244,13 +270,13 @@ class BmxParsingTest {
 	@Test
 	def void functionParameters() {
 		'''
-			Function f0:int(noType)
+			Function f0:int(noType, gen:Itf<String>)
 			End Function
 
 			Function f1:int(param1:String, param2 var, arr:int[] var)
 			End Function
 
-			Function f2:int(param1:String[]= ["1","2"], param2#[])
+			Function f2:int(param1:String[]= ["1","2"], param2#[], param3:Byte Ptr Ptr)
 			End Function
 
 			Function f3:int(param1:int = 5, param2:String=New Call.Fkt("tada"))
@@ -389,6 +415,7 @@ class BmxParsingTest {
 		'''
 			Function someFct(num:object)
 				object.call(param1, , parm3)
+				object.call(, param2, parm3)
 			End Function
 		'''.noErrors
 	}

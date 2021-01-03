@@ -23,7 +23,7 @@ MainStatement: Modifier|FrameworkStatement|ModuleStatement|ModuleInfoStatement|I
 	//|OtherStatent - while, for,...
 ;
 
-Modifier: modifier=("SuperStrict"|"Strict"|"public"|"private");
+Modifier: modifier=("SuperStrict"|"Strict"|"public"|"private"|"protected");
 
 ImportStatement: ("import"|"include"|"incbin") (importURI=STRING | importedNamespace=FQN);
 
@@ -36,11 +36,13 @@ ModuleInfoStatement:"ModuleInfo" info=STRING;
 Annotation:"{"id=ID("="value=STRING)?"}";
 
 TypeBlock returns BmxType:
-	"Type" name=ID ("extends" supertype=[ BmxType | ID])? annotation=Annotation?
+	"Type" name=ID generics = Generics? (("extends"|"implements") supertype=[ BmxType | ID] stgenerics=Generics?)? annotation=Annotation?
 		(abstract?="abstract"|final?="final")?
 		content+=TypeContent*
 	("EndType"| "End" "Type")
 ;
+
+Generics: "<" ID (","ID)* ">";
 
 StructBlock returns BmxStruct:
 	"Struct" name=ID //("extends" supertype=[ BmxType | ID])? annotation=Annotation?
@@ -63,11 +65,11 @@ ExternContent: FunctionDeclaration|TypesContainer;
 FunctionDeclaration: "Function" name=ID IdModifier? fd=FunctionDefintion (value=ValueAssignment)?;
 
 
-TypeContent: ("private"|"public")? (TypesContainer|MethodBlock|FunctionBlock);
+TypeContent: (TypesContainer|MethodBlock|FunctionBlock|Modifier);
 
 Anything:(ExpAnything|","|"Const"|"Local"|"Global"|SelectBlock|IfBlock|TryBlock|WhileBlock)*;
 ExpAnything:"="|ParamAnything|Parenthesized|Array;
-ParamAnything: (ANY_OTHER | ":" |"."| "+"| "-" | "$" | "%" | "#" | "@" | "Ptr" | "Var" | "StaticArray" | INT| ID |STRING);
+ParamAnything: (ANY_OTHER | ":" |"."| "+"| "-" | "$" | "%" | "#" | "@" | "Ptr" | "Var" | "<" | ">" | "StaticArray" | INT| ID |STRING);
 
 ConstantDefinition:=>"Const"  types+=TypeDef (',' types+=TypeDef)* ;//content=ArgumentList<fctArg=false>;
 
@@ -88,13 +90,13 @@ TypeDef: name = ID IdModifier?
 ;
 
 EnumType:
-	"Enum" name=ID ":" type=[BmxType|ID] //("Flags")? not a keyword really
+	"Enum" name=ID (":" type=[BmxType|ID])? //("Flags")? not a keyword really
 		(eName+=ID val+=ValueAssignment?)*
 	("End" "Enum" | "EndEnum")
 	;
 
 TypeRefernce:
-	=>":" type=[BmxType|ID] isArray?=Array? isPointer?="Ptr"?
+	=>":" type=[BmxType|ID] (generics=Generics)?(isArray?=Array? & (isPointer?="Ptr")*)
 ;
 
 ValueAssignment:
@@ -174,7 +176,7 @@ TryBlock:
 	(=>("EndTry" | "End" "Try"))
 ;
 
-Parenthesized:=>"(" (ExpAnything+ ("," ExpAnything*)*)?")";
+Parenthesized:=>"(" ExpAnything* ("," ExpAnything*)*")";
 Array hidden(WS, SL_COMMENT, ML_COMMENT):(=>"[" ('.''.'NL)* ExpAnything* (('.''.'NL)* "," ('.''.'NL)* ExpAnything*)* ('.''.'NL)*"]")+;
 
 FunctionDefintion hidden (WS, SL_COMMENT, ML_COMMENT): (TypeRefernce)? "("(('.''.'NL)* param+=Parameter ("," ('.''.'NL)* param+=Parameter)*)? ('.''.'NL)*")";
