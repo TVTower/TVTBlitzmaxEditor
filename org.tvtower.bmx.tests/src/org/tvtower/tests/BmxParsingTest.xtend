@@ -104,7 +104,7 @@ class BmxParsingTest {
 			Type MyType
 				Method AbstractMethod1() abstract
 
-				Method AbstractMethod2:int() abstract
+				Function AbstractMethod2:int() abstract
 
 				Private
 
@@ -163,6 +163,7 @@ class BmxParsingTest {
 	def void simpleFields() {
 		'''
 			Type MyType
+				Field nameOnly;
 				Field f1:int, f1_1:String, f1_2:float
 				Field ReadOnly f2:Int = 0
 				Field f3:int = Some.CONSTANT
@@ -202,7 +203,7 @@ class BmxParsingTest {
 				Field f(t:String)
 				Field f:int(m:float)
 				Field farray:int(m:float)[]
-				Global g:int(t:String)
+				Global g:int(t:String)="TADA"
 			End Type
 		'''.noErrors
 	}
@@ -212,7 +213,7 @@ class BmxParsingTest {
 		'''
 			Extern "C"
 				Const c
-				Function f:int(p1:int)
+				Function f:int(p1:int) "win32" = "call"
 				Global g:int
 				Function f2:String() = "tada"
 			End Extern

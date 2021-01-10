@@ -68,7 +68,7 @@ ExternBlock:
 
 ExternContent: FunctionDeclaration|TypesContainer;
 
-FunctionDeclaration: "Function" name=ID IdModifier? fd=FunctionDefintion (value=ValueAssignment)?;
+FunctionDeclaration: "Function" name=ID IdModifier? fd=FunctionDefintion osMarker=STRING? (value=ValueAssignment)?;
 
 MethodDeclaration :"Method" name=ID IdModifier? fd=FunctionDefintion;// (value=ValueAssignment)?;
 
@@ -76,20 +76,21 @@ TypeContent: (TypesContainer|MethodBlock|FunctionBlock|Modifier);
 
 Anything:(ExpAnything|","|"Const"|"Local"|"Global"|SelectBlock|IfBlock|TryBlock|WhileBlock)*;
 ExpAnything:"="|ParamAnything|Parenthesized|Array;
-ParamAnything: (ANY_OTHER | ":" |"."|OpSymbol| "$" | "%" | "#" | "@" | "Ptr" | "Var" | "<" | ">" | "StaticArray" | "!" | INT| ID |STRING);
+ParamAnything: (ANY_OTHER | ":" | "." | ";" |OpSymbol| "$" | "%" | "#" | "@" | "Ptr" | "Var" | "<" | ">" | "StaticArray" | "!" | INT| ID |STRING);
 OpSymbol:"+"| "-" | "*"|"/";
 
 ConstantDefinition:=>"Const"  types+=TypeDef (',' types+=TypeDef)* ;//content=ArgumentList<fctArg=false>;
 
 GlobalDefinion: =>"Global" types+=TypeDef (',' types+=TypeDef)* annotation=Annotation?;//content=ArgumentList<fctArg=false>;
 
-FieldDefinition: =>"Field" (readOnly?="ReadOnly" | staticArray?="StaticArray")? types+=TypeDef (',' types+=TypeDef)* annotation=Annotation? osMarker=STRING?;//content=ArgumentList<fctArg=false>;
+FieldDefinition: =>"Field" (readOnly?="ReadOnly" | staticArray?="StaticArray")? types+=TypeDef (',' types+=TypeDef)* annotation=Annotation? osMarker=STRING? ";"?;//content=ArgumentList<fctArg=false>;
 
 LocalDefinition: =>"Local" name = ID ref=TypeRefernce  val=ValueAssignment?;//content=ArgumentList<fctArg=false>;
 
 TypeDef: name = ID IdModifier?
 	(
-		(ref=TypeRefernce (val=ValueAssignment | (callback=CallBack array?=Array?))?) 
+		//TODO extract value assignment
+		(ref=TypeRefernce (callback=CallBack array?=Array?)? val=ValueAssignment?) 
 		| (callback=CallBack array?=Array? val=ValueAssignment?)
 		| array?=Array val=ValueAssignment?
 		| val=ValueAssignment
@@ -140,10 +141,17 @@ MethodBlock returns BmxMethod:
 Operator: "Operator" ("[""]")? (OpSymbol|"="|"<"">")?;
 
 FunctionBlock returns BmxFunction:"Function" name=ID IdModifier?
-	fd=FunctionDefintion annotation=Annotation?
-//	content=StatementBlock
-	content=BlockContent
-	("EndFunction" | "End" "Function")
+	fd=FunctionDefintion
+	(
+		(
+			annotation=Annotation?
+		//	content=StatementBlock
+			content=BlockContent
+			("EndFunction" | "End" "Function")
+		)
+		|
+		(abstract?="abstract" annotation=Annotation?)
+	)
 ;
 
 BlockContent:
@@ -194,7 +202,7 @@ FunctionDefintion hidden (WS, SL_COMMENT, ML_COMMENT): (TypeRefernce)? "("(('.''
 //TODO sehr ähnlich zu TypeDef
 Parameter: id=ID IdModifier?
 	(
-		type=TypeRefernce? isVar?="Var"? callback=CallBack?  isArray?=Array? value=ValueAssignment?
+		type=TypeRefernce? isVar?="Var"? isPointer?="Ptr"? callback=CallBack?  isArray?=Array? value=ValueAssignment?
 	)
 ;
 

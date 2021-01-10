@@ -55,7 +55,8 @@ public class LexerOverrider {
 				current=input.LA(la++);
 				stopIndex++;
 			} while (current!='?' && current!=-1);
-			notLastOption=!isNewLine(input.LA(la));
+			int lastLookahead=input.LA(la);
+			notLastOption=lastLookahead != -1 && !isNewLine(lastLookahead);
 			if(notLastOption) {
 				String segment = input.substring(currentIndex, stopIndex);
 				if(isSignature(segment)) {
