@@ -34,8 +34,7 @@ Zum einen liefert sie nur wenig Hilfreiches und ist bei den großen Dateien zu l
 ## TODOs
 
 * Syntax
-    * Interfaces
-    * Operators
+    * Interfaces (extern)
     * Local, Global in File modelliert - Navigation aus Methode heraus
     * even better comment recognition (fri*endrem*ove)
 * Default-Import statt Warnungen unterdrücken (Auslieferung im Plugin)

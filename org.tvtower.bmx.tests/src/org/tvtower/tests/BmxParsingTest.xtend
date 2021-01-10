@@ -135,7 +135,7 @@ class BmxParsingTest {
 	@Test
 	def void generics() {
 		'''
-			Type MyType<T> extends OtherType<T>
+			Type MyType<T> extends Othe.rType<T> implements Itf
 
 			End Type
 
@@ -174,6 +174,8 @@ class BmxParsingTest {
 				Field f8:int = -1.23
 				Field f9:int = fct.call(a + b, b - c, -1)
 				Field f10:Itf<Somthing>
+				Field pfnCallback(x:Byte Ptr) "win32"
+				Field arr[][] = [[1,2],[3,4]]
 			End Type
 		'''.noErrors
 	}
@@ -217,7 +219,21 @@ class BmxParsingTest {
 			Extern
 				Const d, e
 				Global h, i
+				Global bbTada()="blubbs"
 			EndExtern
+		'''.noErrors
+	}
+
+	@Test
+	def void interfaces() {
+		'''
+			Interface ICollection<T> Extends IIterable<T>
+			
+				Method Count:Int()
+				Method CopyTo(array:T[], index:Int = 0)
+				Method IsEmpty:Int()
+			
+			End Interface
 		'''.noErrors
 	}
 
@@ -265,8 +281,29 @@ class BmxParsingTest {
 				Field f6[2]
 			End Type
 		'''.noErrors
-		}
+	}
 
+	@Test
+	def void operators() {
+		'''
+			Type MyType
+				Method Operator*:int(b:int)
+				End Method
+				Method Operator+:int(b:int)
+				End Method
+				Method Operator-:int(b:int)
+				End Method
+				Method Operator[]:int(b:int)
+				End Method
+				Method Operator[]=:int(b:int)
+				End Method
+				Method Operator <>:int(b:int)
+				End Method
+				Method Operator/:int(b:int)
+				End Method
+			End Type
+		'''.noErrors
+		}
 	@Test
 	def void functionParameters() {
 		'''
@@ -299,7 +336,10 @@ class BmxParsingTest {
 			Function f#:int(param1@Ptr)
 			End Function
 
-			Function f2#:int(param1@)
+			Function f2!:int(param1@)
+			End Function
+
+			Function f3$[]:int()
 			End Function
 		'''.noErrors
 	}
@@ -425,7 +465,7 @@ class BmxParsingTest {
 		'''
 			Type MyType {_exposeToLua}
 				Global f: int {noSave}
-				Field f:String="" {noSave}
+				Field f:String="" {noSave otherName="sdfls"}
 				Method m1() {_exposeToLua="selected"}
 				End Method
 
