@@ -88,14 +88,14 @@ public class LexerOverrider {
 
 	private boolean isSignature(String segment) {
 		String lower = segment.toLowerCase();
-		if(lower.contains("end")) {
+		if(lower.matches("\send")) {
 			return false;
 		}
 		int secondLineStart = lower.indexOf('\n');
 		if(secondLineStart>0) {
 			String secondLine = lower.substring(secondLineStart).trim();
 //			System.out.println(secondLine);
-			return secondLine.startsWith("function ")||secondLine.startsWith("method ");
+			return secondLine.startsWith("function ") ||secondLine.startsWith("method ")||secondLine.startsWith("struct ")||secondLine.startsWith("type ");
 		}
 		return false;
 		

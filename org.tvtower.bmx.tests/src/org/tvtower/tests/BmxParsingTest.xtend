@@ -108,12 +108,12 @@ class BmxParsingTest {
 
 				Private
 
-				Method m1()
+				Method m1[]()
 				End Method
 
 				Protected
 
-				Method m1:int()
+				Method m2:int()
 					Return 20
 				End Method
 
@@ -122,7 +122,7 @@ class BmxParsingTest {
 			End Type
 
 			Type MyOtherType
-				Function RemoveSomething()
+				Function RemoveSomething[]()
 				End Function
 
 				Function RemoveSomething:int()
@@ -139,7 +139,7 @@ class BmxParsingTest {
 
 			End Type
 
-			Type MyType2<T,U> implements OtherType2<T,U>
+			Type MyType2<T,U> implements OtherType2<OT<T>,OT2<U,V>>
 
 			End Type
 		'''.noErrors
@@ -154,6 +154,10 @@ class BmxParsingTest {
 				Function f:int()
 					return 1
 				End Function
+				y=g()
+				Type InnerType
+					Global g:int=13
+				End Type
 			End Method
 		EndType
 		'''.noErrors

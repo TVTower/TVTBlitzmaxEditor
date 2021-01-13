@@ -48,7 +48,8 @@ InterfaceBlock returns BmxType:
 	("EndInterface"| "End" "Interface")
 ;
 
-Generics: "<" ID (","ID)* ">";
+//TODO type reference?
+Generics: =>"<" ID Generics? ("," ID Generics? )* ">";
 
 StructBlock returns BmxStruct:
 	"Struct" name=ID //("extends" supertype=[ BmxType | ID])? annotation=Annotation?
@@ -119,7 +120,7 @@ ValueAssignment:
 //VariableDef: name=ID ':' type=[BmxType|ID];
 
 MethodBlock returns BmxMethod:
-	"Method" (name=ID | Operator) IdModifier?
+	"Method" (name=ID  | Operator) IdModifier?
 		fd=FunctionDefintion
 		(
 			annotation=Annotation?
@@ -156,8 +157,14 @@ FunctionBlock returns BmxFunction:"Function" name=ID IdModifier?
 
 BlockContent:
 	(text+=Anything)
-	(function+=FunctionBlock
-	(text+=Anything))*
+	(
+		(
+			function+=FunctionBlock
+				|
+			type+=TypeBlock
+		)
+		text+=Anything
+	)*
 ;
 
 SelectBlock:
@@ -206,7 +213,7 @@ Parameter: id=ID IdModifier?
 	)
 ;
 
-IdModifier hidden(): ("!"|"%"|("$" ID?)|"#"|"@" "Ptr"?) ("[""]")?;
+IdModifier hidden(): ("[""]") | (("!"|"%"|("$" ID?)|"#"|"@" "Ptr"?) ("[""]")?);
 
 CallBack: {CallBack}"("(param+=Parameter ("," param+=Parameter)*)?")";
 
@@ -226,7 +233,7 @@ terminal STRING:
  * white space after rem, otherwise function names etc. starting with rem will be tokenized incorrectly
  */
 @Override
-terminal ML_COMMENT : ('Rem'|'rem'|'REM')(' '|'\t'|'\r'|'\n') -> ('EndRem'|'endrem'|'endRem'|'ENDREM'|'End Rem'|'end rem'|'END REM'); 
+terminal ML_COMMENT : ('Rem'|'rem'|'REM')(' '|'\t'|'\r'|'\n') -> (' '|'\t'|'\n')('EndRem'|'endrem'|'endRem'|'ENDREM'|'End Rem'|'end rem'|'END REM'); 
 
 @Override
 terminal SL_COMMENT : "'" !('\n'|'\r')* ('\r'? '\n')?;
