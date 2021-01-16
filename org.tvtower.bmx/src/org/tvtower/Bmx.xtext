@@ -66,8 +66,15 @@ ExternBlock:
 	("EndExtern" | "End" "Extern")
 ;
 
+ExternType:
+	"Type" name=ID generics = Generics? (("extends"|"implements") supertype=[ BmxType | FQN ] stgenerics=Generics?)*// annotation=Annotation?
+		content+=ExternTypeContent*
+	("EndType"| "End" "Type")
+;
 
-ExternContent: FunctionDeclaration|TypesContainer;
+ExternTypeContent: MethodDeclaration;
+
+ExternContent: FunctionDeclaration|TypesContainer|InterfaceBlock|StructBlock|ExternType;
 
 FunctionDeclaration: "Function" name=ID IdModifier? fd=FunctionDefintion osMarker=STRING? (value=ValueAssignment)?;
 

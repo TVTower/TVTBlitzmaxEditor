@@ -34,7 +34,6 @@ Zum einen liefert sie nur wenig Hilfreiches und ist bei den großen Dateien zu l
 ## TODOs
 
 * Syntax
-    * Interface/Struct/Type (extern)
     * Local, Global in File modelliert - Navigation aus Methode heraus
 * Default-Import statt Warnungen unterdrücken (Auslieferung im Plugin)
 * file members für outline auch zusammenfassen?

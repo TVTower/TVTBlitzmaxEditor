@@ -220,10 +220,19 @@ class BmxParsingTest {
 				Function f:int(p1:int) "win32" = "call"
 				Global g:int
 				Function f2:String() = "tada"
+				Interface Intf
+					Method meth:int()
+				End Interface
 			End Extern
 			Extern
 				Const d, e
+				Type ExternType
+					Method meth:int()
+				End Type
 				Global h, i
+				Struct SOMESTR
+					Field structField:byte
+				End Struct
 				Global bbTada()="blubbs"
 			EndExtern
 		'''.noErrors
