@@ -8,7 +8,7 @@ import org.tvtower.parser.antlr.lexer.InternalBmxLexer;
 //lexer overriding adapted from the code I wrote for Xturtle (https://github.com/AKSW/Xturtle/blob/develop/de.itemis.tooling.xturtle/src/de/itemis/tooling/xturtle/CustomXturtleLexer.java)
 public class CustomBmxLexer extends InternalBmxLexer {
 
-	LexerOverrider overrider = new LexerOverrider(CustomBmxLexer.class);
+	LexerOverrider overrider = new LexerOverrider();
 
 	public CustomBmxLexer() {
 		super();

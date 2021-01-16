@@ -1,7 +1,5 @@
 package org.tvtower;
 
-import java.lang.reflect.Field;
-
 import org.antlr.runtime.BaseRecognizer;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.RecognizerSharedState;
@@ -9,35 +7,11 @@ import org.antlr.runtime.RecognizerSharedState;
 public class LexerOverrider {
 
 	private static final int CHANNEL = BaseRecognizer.DEFAULT_TOKEN_CHANNEL;
-	private int compilerOptionRule;
-
-	public LexerOverrider(Class<CustomBmxLexer> lexer) {
-		this.compilerOptionRule= getRuleIndex(lexer, "RULE_COMPILER_OPTION");
-	}
-
-	private int getRuleIndex(Class<?> lexerClass, String ruleName) {
-		try {
-			Field field = lexerClass.getField(ruleName);
-			Object value = field.get(lexerClass);
-			return (Integer) value;
-		} catch (SecurityException e) {
-			throw getException(ruleName, e);
-		} catch (NoSuchFieldException e) {
-			throw getException(ruleName, e);
-		} catch (IllegalArgumentException e) {
-			throw getException(ruleName, e);
-		} catch (IllegalAccessException e) {
-			throw getException(ruleName, e);
-		}
-	}
-
-	private RuntimeException getException(String rule, Throwable cause) {
-		throw new RuntimeException(
-				"cannot determine the index of rule " + rule, cause);
-	}
+	private int compilerOptionRule=CustomBmxLexer.RULE_COMPILER_OPTION;
+	private int exitRule=CustomBmxLexer.RULE_EXIT;
 
 	public boolean override(CharStream input, RecognizerSharedState state) {
-		return overrideCompilerOptionForFirstAPI(input, state);
+		return overrideCompilerOptionForFirstAPI(input, state) || overrideEnd(input, state);
 	}
 
 	//try to handle the case that a compiler option exchanges only the api declaration of a function or method
@@ -62,7 +36,6 @@ public class LexerOverrider {
 				if(isSignature(segment)) {
 					//if a signature was recognized consume the segment - overriding the regular
 					//compiler option grammar definition
-//					System.out.println(segment);
 					while(la-- > 2) {
 						input.consume();
 					}
@@ -88,6 +61,11 @@ public class LexerOverrider {
 
 	private boolean isSignature(String segment) {
 		String lower = segment.toLowerCase();
+		if(lower.matches("\\?(\\w+\\s+)+(\\r?\\n)end \\w+(\r?\n)\\?")) {
+			//special case in gtkcommon.bmx - highlighting still inconsistent
+			//end statement of signature
+			return true;
+		}
 		if(lower.matches("\send")) {
 			return false;
 		}
@@ -98,6 +76,36 @@ public class LexerOverrider {
 			return secondLine.startsWith("function ") ||secondLine.startsWith("method ")||secondLine.startsWith("struct ")||secondLine.startsWith("type ");
 		}
 		return false;
-		
+	}
+
+	//exit-end may be followed by white space or comment...
+	private boolean overrideEnd(CharStream input, RecognizerSharedState state) {
+		if((input.LA(1)=='E'||input.LA(1)=='e')
+				&&
+				(input.LA(2)=='N'||input.LA(2)=='n')
+				&&
+				(input.LA(3)=='D'||input.LA(3)=='d')
+				) {
+			int index=4;
+			boolean stop=false;
+			do {
+				int lookaheadChar=input.LA(index);
+				if(lookaheadChar==' '||lookaheadChar=='\t') {
+					index++;
+				}else {
+					stop=true;
+				}
+			}while(!stop);
+			int charToCheck=input.LA(index);
+			//next non-space character after end must be new line, file end or comment
+			if(isNewLine(charToCheck)||charToCheck==-1||charToCheck=='\'') {
+				input.consume();
+				input.consume();
+				input.consume();
+				stateOK(state, exitRule);
+				return true;
+			}
+		}
+		return false;
 	}
 }
