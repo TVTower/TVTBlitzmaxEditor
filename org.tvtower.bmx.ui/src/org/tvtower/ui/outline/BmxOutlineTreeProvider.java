@@ -22,6 +22,8 @@ import org.tvtower.bmx.GlobalDefinion;
 import org.tvtower.bmx.ImportStatement;
 import org.tvtower.bmx.LocalDefinition;
 import org.tvtower.bmx.Modifier;
+import org.tvtower.bmx.ModuleInfoStatement;
+import org.tvtower.bmx.ModuleStatement;
 import org.tvtower.bmx.TypeDef;
 import org.tvtower.bmx.TypeLikeBlock;
 import org.tvtower.bmx.TypesContainer;
@@ -44,6 +46,10 @@ public class BmxOutlineTreeProvider extends DefaultOutlineTreeProvider {
 				}else if(element instanceof ImportStatement) {
 					show=false;
 				}else if(element instanceof Modifier) {
+					show=false;
+				} else if(element instanceof ModuleStatement) {
+					show=false;
+				} else if(element instanceof ModuleInfoStatement) {
 					show=false;
 				}
 				if (show) {
