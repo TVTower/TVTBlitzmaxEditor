@@ -17,6 +17,7 @@ import org.tvtower.bmx.FieldDefinition;
 import org.tvtower.bmx.FunctionDeclaration;
 import org.tvtower.bmx.GlobalDefinion;
 import org.tvtower.bmx.LocalDefinition;
+import org.tvtower.bmx.MethodDeclaration;
 import org.tvtower.bmx.TypeDef;
 
 /**
@@ -71,6 +72,10 @@ public class BmxLabelProvider extends DefaultEObjectLabelProvider {
 	}
 
 	String image(BmxMethod method) {
+		return "method.gif";
+	}
+
+	String image(MethodDeclaration method) {
 		return "method.gif";
 	}
 

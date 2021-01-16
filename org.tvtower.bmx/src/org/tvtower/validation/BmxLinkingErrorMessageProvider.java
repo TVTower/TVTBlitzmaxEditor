@@ -13,13 +13,22 @@ public class BmxLinkingErrorMessageProvider extends LinkingDiagnosticMessageProv
 		Severity severity=Severity.WARNING;
 		if(linkText!=null) {
 			switch (linkText.toLowerCase()) {
+			case "ulong":
+			case "uint":
+			case "size_t":
 			case "int":
+			case "int128":
 			case "object":
 			case "string":
 			case "tstringbuilder":
 			case "long":
 			case "float":
+			case "float64":
+			case "float128":
 			case "double":
+			case "double128":
+			case "lparam":
+			case "wparam":
 			case "byte":
 			case "tmap":
 			case "tobjectmap":
@@ -52,6 +61,10 @@ public class BmxLinkingErrorMessageProvider extends LinkingDiagnosticMessageProv
 //				break;
 
 			default:
+				if(linkText.length()==1) {
+					//probably generics
+					return null;
+				}
 				break;
 			}
 		}

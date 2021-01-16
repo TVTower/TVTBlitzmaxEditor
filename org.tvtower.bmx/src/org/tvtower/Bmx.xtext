@@ -51,8 +51,8 @@ InterfaceBlock returns BmxType:
 //TODO type reference?
 Generics: =>"<" ID Generics? ("," ID Generics? )* ">";
 
-StructBlock returns BmxStruct:
-	"Struct" name=ID //("extends" supertype=[ BmxType | ID])? annotation=Annotation?
+StructBlock returns BmxType:
+	{BmxStruct} "Struct" name=ID //("extends" supertype=[ BmxType | ID])? annotation=Annotation?
 //		(abstract?="abstract"|final?="final")?
 		content+=TypeContent*
 	("EndStruct"| "End" "Struct")
@@ -66,8 +66,8 @@ ExternBlock:
 	("EndExtern" | "End" "Extern")
 ;
 
-ExternType:
-	"Type" name=ID generics = Generics? (("extends"|"implements") supertype=[ BmxType | FQN ] stgenerics=Generics?)*// annotation=Annotation?
+ExternType returns BmxType:
+	{ExternType}"Type" name=ID generics = Generics? (("extends"|"implements") supertype=[ BmxType | FQN ] stgenerics=Generics?)*// annotation=Annotation?
 		content+=ExternTypeContent*
 	("EndType"| "End" "Type")
 ;
@@ -106,8 +106,8 @@ TypeDef: name = ID IdModifier?
 	)?
 ;
 
-EnumType:
-	"Enum" name=ID (":" type=[BmxType|ID])? //("Flags")? not a keyword really
+EnumType returns BmxType:
+	{EnumType}"Enum" name=ID (":" type=[BmxType|ID])? //("Flags")? not a keyword really
 		(eName+=ID val+=ValueAssignment?)*
 	("End" "Enum" | "EndEnum")
 	;
