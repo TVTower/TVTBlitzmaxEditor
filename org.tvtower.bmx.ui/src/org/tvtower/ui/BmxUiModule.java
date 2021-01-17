@@ -4,8 +4,12 @@
 package org.tvtower.ui;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.xtext.resource.containers.IAllContainersState;
 import org.eclipse.xtext.ui.editor.autoedit.AbstractEditStrategyProvider;
 import org.eclipse.xtext.ui.editor.hyperlinking.IHyperlinkHelper;
+import org.eclipse.xtext.ui.shared.Access;
+
+import com.google.inject.Provider;
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -24,4 +28,10 @@ public class BmxUiModule extends AbstractBmxUiModule {
 	public Class<? extends IHyperlinkHelper> bindHyperlinkHelper() {
 		return BmxHyperlinkHelper.class;
 	}
+
+	@Override
+	public Provider<? extends IAllContainersState> provideIAllContainersState() {
+		return Access.getWorkspaceProjectsState();
+	}
+
 }

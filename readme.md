@@ -12,6 +12,11 @@ Für das Aufsetzen der Entwicklungsumgebung kann die Oomph-Setup-Datei `https://
 Die Autovervollständigung sollte nicht verwendet werden.
 Zum einen liefert sie nur wenig Hilfreiches und ist bei den großen Dateien zu langsam (Neuparsen des Präfix nötig).
 
+Die Navigation zu in Modulen definierten Typen funktioniert, wenn man die Blitzmax-Module als Eclipse-Projekt importiert und eine Projektreferenz herstellt.
+* .project mit Xtext-Nature ins Blitzmax-mod verzeichnis
+* dieses Projekt importieren
+* Properties des TVTower-Projekts öffnen, in Project-References das Modul-Verzeichnis selektieren
+
 # Phase 1
 
 * Dateien mit möglichst wenigen Syntaxfehlern parsen
@@ -30,6 +35,7 @@ Zum einen liefert sie nur wenig Hilfreiches und ist bei den großen Dateien zu l
 
 * Die verschiedenen Varianten zum Abschließen eines Blocks sind aus Tooling-Bau-Sicht ein Graus. Mit Leerzeichen getrennte Schlüsselwörter mit gleinem Präfix `End X` machen das Leben unnötig schwer. Warum nicht einfach immer `EndMethod`, `EndIf`... Den Programmabbruch mit `End` fange ich aktuell ab, indem ich `End` sofort gefolgt von einem Zeilenumbruch als separates Token behandele, das vor dem Parser versteckt wird.
 * Die Compileroptionen können semantisch nicht unterstützt werden. Im Moment fange ich sie einfach weg. Für den Fall dass es zwei Varianten der Methodensignatur gibt, aber der Body erhalten bleibt, wurde der Lexer so angepasst, dass nur die letzte Signatur für den Parser sichtbar ist. Damit bleibt die Struktur syntaktisch korrekt; auch wenn vielleicht die falsche Option gewählt wurde.
+* Das Linking ist nicht ausimplementiert. D.h. Importe etc. werden nicht wirklich nachverfolgt. Da die Referenzierung größtenteils mit einfachen Namen und nicht vollqualifiziert erfolgt, funktioniert die Navigation, da alle Typen mit einfachen Namen im Index abgelegt werden und mit einfachem Namen referenziert werden.
 
 ## TODOs
 
