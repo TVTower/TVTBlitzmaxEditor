@@ -33,17 +33,17 @@ ModuleStatement:"Module" module=FQN;
 
 ModuleInfoStatement:"ModuleInfo" info=STRING;
 
-Annotation:"{"(id+=ID("="value+=STRING)?)+"}";
+Annotation: ("override"|"final"|("{"(id+=ID("="value+=STRING)?)+"}"))*;
 
 TypeBlock returns BmxType:
-	"Type" name=ID generics = Generics? (("extends"|"implements") supertype=[ BmxType | FQN ] stgenerics=Generics?)* annotation=Annotation?
-		(abstract?="abstract"|final?="final")?
+	"Type" name=ID generics = Generics? (("extends"|"implements") supertype=[ BmxType | FQN ] stgenerics=Generics?)* 
+		(annotation=Annotation&abstract?="abstract"?)
 		content+=TypeContent*
 	("EndType"| "End" "Type")
 ;
 
 InterfaceBlock returns BmxType:
-	"Interface" name=ID generics = Generics? ("extends" supertype=[ BmxType | ID] stgenerics=Generics?)? annotation=Annotation?
+	"Interface" name=ID generics = Generics? ("extends" supertype=[ BmxType | ID] stgenerics=Generics?)? annotation=Annotation
 		content+=MethodDeclaration*
 	("EndInterface"| "End" "Interface")
 ;
@@ -89,9 +89,9 @@ OpSymbol:"+"| "-" | "*"|"/";
 
 ConstantDefinition:=>"Const"  types+=TypeDef (',' types+=TypeDef)* ;//content=ArgumentList<fctArg=false>;
 
-GlobalDefinion: =>"Global" types+=TypeDef (',' types+=TypeDef)* annotation=Annotation?;//content=ArgumentList<fctArg=false>;
+GlobalDefinion: =>"Global" types+=TypeDef (',' types+=TypeDef)* annotation=Annotation;//content=ArgumentList<fctArg=false>;
 
-FieldDefinition: =>"Field" (readOnly?="ReadOnly" | staticArray?="StaticArray")? types+=TypeDef (',' types+=TypeDef)* annotation=Annotation? osMarker=STRING? ";"?;//content=ArgumentList<fctArg=false>;
+FieldDefinition: =>"Field" (readOnly?="ReadOnly" | staticArray?="StaticArray")? types+=TypeDef (',' types+=TypeDef)* annotation=Annotation osMarker=STRING? ";"?;//content=ArgumentList<fctArg=false>;
 
 LocalDefinition: =>"Local" name = ID ref=TypeRefernce  val=ValueAssignment?;//content=ArgumentList<fctArg=false>;
 
@@ -130,9 +130,8 @@ MethodBlock returns BmxMethod:
 	"Method" (name=ID  | Operator) IdModifier?
 		fd=FunctionDefintion
 		(
-			annotation=Annotation?
+			annotation=Annotation
 			(
-				(final?="final")?
 		//		"("
 		//			((parameters+=ParameterDefinition) (',' parameters+=ParameterDefinition)* )? 
 		//		")"
@@ -142,7 +141,8 @@ MethodBlock returns BmxMethod:
 			
 			)
 			|
-			(abstract?="abstract" annotation=Annotation?)
+			(abstract?="abstract" annotation=Annotation)
+			
 		)
 ;
 
@@ -152,13 +152,14 @@ FunctionBlock returns BmxFunction:"Function" name=ID IdModifier?
 	fd=FunctionDefintion
 	(
 		(
-			annotation=Annotation?
+			annotation=Annotation
 		//	content=StatementBlock
 			content=BlockContent
 			("EndFunction" | "End" "Function")
 		)
 		|
-		(abstract?="abstract" annotation=Annotation?)
+		(abstract?="abstract" annotation=Annotation)
+		
 	)
 ;
 
